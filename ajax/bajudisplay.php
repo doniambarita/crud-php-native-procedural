@@ -29,29 +29,38 @@ $jumlahHalaman = 4;
 ?>
 
 <?php if(isset($keyword)){ ?>
+
+
+
     <?php if( !preg_match("/^[0-9a-zA-Z\.\ ]*$/", $keyword) ) { ?>
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>No.</th>
-                    <th>Aksi</th>
-                    <th>Gambar</th>
-                    <th>Brand</th>
-                    <th>Artikel</th>
-                    <th>Warna</th>
-                    <th>Size</th>
-                    <th>Harga</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td style="text-align:center; color:red; font-style:italic;" colspan="8"><b>Data Tidak Di Temukan</b></td>
-                </tr>
-            </tbody>
-        </table>      
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Aksi</th>
+                        <th>Gambar</th>
+                        <th>Brand</th>
+                        <th>Artikel</th>
+                        <th>Warna</th>
+                        <th>Size</th>
+                        <th>Harga</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="text-align:center; color:red; font-style:italic;" colspan="8"><b>Data Tidak Di Temukan</b></td>
+                    </tr>
+                </tbody>
+            </table>    
+        </div>  
     <?php exit; } ?>
 
     
+
+
+
+
     <?php
     $query = " SELECT * FROM bajudisplay 
     WHERE
@@ -68,75 +77,71 @@ $jumlahHalaman = 4;
      !isset($bajudisplay[0]["warna"]) &&
      !isset($bajudisplay[0]["size"]) &&
      !isset($bajudisplay[0]["harga"])
-    ){ 
-    ?>
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>No.</th>
-                    <th>Aksi</th>
-                    <th>Gambar</th>
-                    <th>Brand</th>
-                    <th>Artikel</th>
-                    <th>Warna</th>
-                    <th>Size</th>
-                    <th>Harga</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td style="text-align:center; color:red; font-style:italic;" colspan="8"><b>Data Tidak Di Temukan</b></td>
-                </tr>
-            </tbody>
-        </table>
+    ){  ?>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Aksi</th>
+                        <th>Gambar</th>
+                        <th>Brand</th>
+                        <th>Artikel</th>
+                        <th>Warna</th>
+                        <th>Size</th>
+                        <th>Harga</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="text-align:center; color:red; font-style:italic;" colspan="8"><b>Data Tidak Di Temukan</b></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     <?php exit; } ?>
 
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="bootstrap.css">
-</head>
-<body>
-    
-<table class="table table-hover">
-    <thead>
-        <tr>
-            <th>No.</th>
-            <th>Aksi</th>
-            <th>Gambar</th>
-            <th>Brand</th>
-            <th>Artikel</th>
-            <th>Warna</th>
-            <th>Size</th>
-            <th>Harga</th>
-        </tr>
-    </thead>
 
-    <tbody>
-    <?php $i=1; foreach($bajudisplay as $bdy) : ?>
-        <tr>
-            <td><?= $i; ?></td>
-            <td>
-                <a class='btn btn-primary' href="ubah.php?id=<?= $bdy["id"]; ?>">Ubah</a> |
-                <a class='btn btn-danger'  href="hapus.php?id=<?= $bdy["id"]; ?>" onclick="return confirm('yakin menghapus data ?');">Hapus</a>
-            </td>
-            <td><img src="../img/<?php echo $bdy["gambar"]; ?>" width="60"></td>
-            <td><?= $bdy["brand"]; ?></td>
-            <td><?= $bdy["artikel"]; ?></td>
-            <td><?= $bdy["warna"]; ?></td>
-            <td><?= $bdy["size"]; ?></td>
-            <td><?= $bdy["harga"]; ?></td>
-        </tr>     
-    <?php $i++; endforeach; ?>
-    </tbody>
 
-</table>
+
+
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">No.</th>
+                    <th scope="col">Aksi</th>
+                    <th scope="col">Gambar</th>
+                    <th scope="col">Brand</th>
+                    <th scope="col">Artikel</th>
+                    <th scope="col">Warna</th>
+                    <th scope="col">Size</th>
+                    <th scope="col">Harga</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            <?php $i=1; foreach($bajudisplay as $bdy) : ?>
+                <tr>
+                    <td><?= $i; ?></td>
+                    <td>
+                        <a class='btn btn-primary' href="ubah.php?id=<?= $bdy["id"]; ?>">Ubah</a> |
+                        <a class='btn btn-danger'  href="hapus.php?id=<?= $bdy["id"]; ?>" onclick="return confirm('yakin menghapus data ?');">Hapus</a>
+                    </td>
+                    <td><img src="../img/<?php echo $bdy["gambar"]; ?>" width="60"></td>
+                    <td><?= $bdy["brand"]; ?></td>
+                    <td><?= $bdy["artikel"]; ?></td>
+                    <td><?= $bdy["warna"]; ?></td>
+                    <td><?= $bdy["size"]; ?></td>
+                    <td><?= $bdy["harga"]; ?></td>
+                </tr>     
+            <?php $i++; endforeach; ?>
+            </tbody>
+
+        </table>
+    </div>
+
+
 <?php } ?>
-
-
-</body>
-</html>
