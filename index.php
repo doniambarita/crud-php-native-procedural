@@ -202,31 +202,31 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
 <div class="container">
-  <a class="navbar-brand" href="index.php">
-  <?php if( isset($pagi) ) { ?>
-            <?= $pagi; ?>
-            <?php } ?>
-            <?php if( isset($siang) ) { ?>
-            <?= $siang; ?>
-            <?php } ?>
-            <?php if( isset($sore) ) { ?>
-            <?= $sore; ?>
-            <?php } ?>
-            <?php if( isset($malam) ) { ?>
-            <?= $malam; ?>
-          <?php } ?>
+    <a class="navbar-brand" href="index.php">
+        <?php if( isset($pagi) ) { ?>
+        <?= $pagi; ?>
+        <?php } ?>
+        <?php if( isset($siang) ) { ?>
+        <?= $siang; ?>
+        <?php } ?>
+        <?php if( isset($sore) ) { ?>
+        <?= $sore; ?>
+        <?php } ?>
+        <?php if( isset($malam) ) { ?>
+        <?= $malam; ?>
+        <?php } ?>
     </a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav ml-auto">
-      <li class="nav-item dropdown">
-          <a class="dropdown-item" href="logout.php">Logout</a>
-      </li>
-    </ul>
-  </div>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+                
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item dropdown">
+            <a class="dropdown-item" href="logout.php">Logout</a>
+        </li>
+      </ul>
+    </div>
   </div>
 </nav>
 
@@ -269,7 +269,7 @@
                       </tbody>
                   </table>
                 </div>
-            <?php exit; } ?>
+              <?php exit; } ?>
             
 
               <?php
@@ -292,28 +292,28 @@
                   !isset($bajudisplay[0]["size"]) &&
                   !isset($bajudisplay[0]["harga"])
                 ){  ?>      
-            <div class="table-responsive">
-                <table class="table">
-                  <thead>
-                    <tr>
-                        <th scope="col">No.</th>
-                        <th scope="col">Aksi</th>
-                        <th scope="col">Gambar</th>
-                        <th scope="col">Brand</th>
-                        <th scope="col">Artikel</th>
-                        <th scope="col">Warna</th>
-                        <th scope="col">Size</th>
-                        <th scope="col">Harga</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                        <td colspan="8" style="text-align:center; color:red; font-style:italic;"><b>Data Tidak Di Temukan</b></td>
-                    </tr>
-                  </tbody>
-                </table>  
-            </div>
-                  <?php exit; } ?>
+                    <div class="table-responsive">
+                        <table class="table">
+                          <thead>
+                            <tr>
+                                <th scope="col">No.</th>
+                                <th scope="col">Aksi</th>
+                                <th scope="col">Gambar</th>
+                                <th scope="col">Brand</th>
+                                <th scope="col">Artikel</th>
+                                <th scope="col">Warna</th>
+                                <th scope="col">Size</th>
+                                <th scope="col">Harga</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                                <td colspan="8" style="text-align:center; color:red; font-style:italic;"><b>Data Tidak Di Temukan</b></td>
+                            </tr>
+                          </tbody>
+                        </table>  
+                    </div>
+                <?php exit; } ?>
 
             <?php } ?>
 
