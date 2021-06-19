@@ -2,8 +2,6 @@
 session_start();
 require 'functions.php';
 
-// bgtu kita masuk ke index , tanpa melalui isi form login dengan baik maka lansung di tendang lagi ke halaman login
-// krn $_SESSION["login"] ga ada , jadi bisa masuk index hanya si user mengisi login dengan baik dan benar 
 if( !isset($_SESSION["login"]) ){
     echo"
         <script>
@@ -14,32 +12,15 @@ if( !isset($_SESSION["login"]) ){
     exit;
 }
 
-
-// ambil data id dari url dan gw simpan ke dalam variabel $id
-// nah logika di bawah adalah jika user memasukkan id nya lewat url dan ternyata id nya tidak ada di dalam database maka 
-// maupun yg di ketik di url nya itu tidak benar / tidak lengkap tulisan id nya , maka secara langsung akan di lempar
-// ke halaman index.php
-/* yg terpenting adalah gw amanin dulu nih pada saat ngirim datanya ke url , soalnya ngeri user masukin id nya dari url 
-  trus ama user diapit kome id nya , nah itu bahaya tuh , caranya adalah Menggunakan casting input. Misalnya nilai harus 
-  berupa integer, gw bisa juga melakukan casting dengan fungsi int(). ini contohnya : $id = (int)$_GET["id"];
-  atau juga bisa pake fungsi bawaan php mysqli_real_escape_string(); , tpi menurut gw pake yg fungsi yg mysqli ajh
-  */
 $id = mysqli_real_escape_string($conn,$_GET["id"]);
 $bajudisplay = query("SELECT * FROM bajudisplay WHERE id=$id");
 if( $id == '' || $bajudisplay == FALSE ){
     header("Location: index.php");
 }
 
-
-// nih kenapa saat gw tulisa id=$id , nah si $id nya ga gw pakein tanda kutip ? nah krn hasil $id itu integer , beda lagi
-// kalo dia string
 $bajudisplay = query("SELECT * FROM bajudisplay WHERE id=$id");
 
 if ( isset($_POST["ubah"]) ){  
-    /*
-    Nah if di bawah ini adlah jika admin , tidak mengubah data sama sekali , dan lsngung pencet tombol button simpannya .
-    maka yg terjadi akan memunculkna pop up data tidak di ubah dan akan di redirect ke halaman index.php
-    */
     if( $_FILES["gambar"]["name"] == ''  &&
         $_POST["brand"] == $bajudisplay[0]["brand"] && 
         $_POST["artikel"] == $bajudisplay[0]["artikel"] &&    
@@ -55,16 +36,9 @@ if ( isset($_POST["ubah"]) ){
         ";
     }
 
-    // krn function bisa ngirim 2 argumen , jadi nya gw disini ngirim 2 argumen yaitu data data nya yg kita ambil 
-    // menggunakan $_POST dan argumen ke 2 $id yg dimana $id berisi data get yg gw simpen di $id
     $hasil = queryUbah($_POST,$id);
 
     if ( $hasil > 0 ){
-        /*
-        kalo mysqli_affected_rows itu dia menerima 2 kondisi , kondisi pertama jika hasil nya sama dengan integer 1 maka
-        dia true , artinya berhasil di tambahkan , maka akan mengeksekusi kode di dalam if ini ,
-        Dan jika hasilnya 0 / false , maka dia akan mengeksekusi kondisi di dalam else yg di mana datanya gagal di ubah
-        */
         echo "
             <script>
                 alert('Data Berhasil Diubah!');
@@ -78,32 +52,28 @@ if ( isset($_POST["ubah"]) ){
                 document.location.href = 'index.php'; 
             </script>
         ";
-        // sbnrnya si ya menurut gw , pesan error ini tidak di perlukan , knp ? ya krn kan sintaks/query sql nya sudah 
-        // dituliskan di dalam code , dan kita user/gw input data nya udh bentuk interface yg dimana tinggal kita 
-        // isi isikan kolom nya tidak perlu lagi menuliskan query , mknya si mnurut gw ga diperlukan lagi , itu opini gw
-        echo mysqli_error($conn); //nah knp gw bisa gunain $conn dan juga di atas tidak ada koneksi database dan tidak
-                                  // $conn ?, nah krn tdi gw udh menghubungkan halaman ini dgn hal functions.php , jadi nya 
-                                  // funsi2 atau variable yg di halaman funtions bisa gw panggil disni
+        echo mysqli_error($conn);
     }
 }
 
 ?>
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ubah Data Baju Display</title>
-    <link rel="stylesheet" href="bootstrap.min.css">    
-    <script src="jquery.min.js"></script>
-    <script src="bootstrap.min.js"></script>
-    <script src="popper.min.js"></script>
-</head>
-<body>
-    
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-<div class="container">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Ubah Data Baju Display</title>
+  </head>
+<body>
+
+
+<div class="container mt-3 mb-5">
   <h2>Ubah Data Baju Display</h2><br>
   <form action="" method="post" enctype="multipart/form-data">
   <?php foreach ($bajudisplay as $bjy) : ?>
@@ -130,24 +100,36 @@ if ( isset($_POST["ubah"]) ){
     </div>
     Gambar :
     <br>
-    <img style="margin:5px 0px 0px 0px" src="img/<?= $bjy["gambar"]; ?>" width="150">
+    <img style="margin:5px 0px 0px 0px" id="output_image" src="img/<?= $bjy["gambar"]; ?>" width="250">
     <div style="margin:10px 0px 0px 0px" class="custom-file">
-        <input type="file" class="custom-file-input" id="customFile" name="gambar">
+        <input type="file" accept="image/*" class="custom-file-input" id="customFile" name="gambar" onchange="preview_image(event)">
         <label class="custom-file-label" for="customFile">Masukan gambar</label>
     </div>
-    <button style="margin:10px 0px 40px 0px" type="submit" class="btn btn-primary" name="ubah">Ubah</button>
+    <button type="submit" class="btn btn-primary mt-3 mb-5 mr-2" name="ubah">Ubah</button>
+    <a href="index.php" class="btn btn-info mt-3 mb-5">Batal</a>
     <?php endforeach; ?>
   </form>
 </div>
 
-<!-- Script di bawah ini adalh , jika user menginputkan gambar , maka nama gambar nya akan berubah , yg tadi nya default
-Masukkan gambar , akan berubah menjadi nama file gambar yg di inputkan user  -->
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <script>
-// Add the following code if you want the name of the file appear on select
-$(".custom-file-input").on("change", function() {
-  var fileName = $(this).val().split("\\").pop();
-  $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
-});
+  function preview_image(event) 
+  {
+   var reader = new FileReader();
+   reader.onload = function()
+   {
+    var output = document.getElementById('output_image');
+    output.src = reader.result;
+   }
+   reader.readAsDataURL(event.target.files[0]);
+  }
+  $(".custom-file-input").on("change", function() {
+    var fileName = $(this).val().split("\\").pop();
+    $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+  });
 </script>
 
     

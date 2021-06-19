@@ -2,8 +2,6 @@
 session_start();
 require 'functions.php';   
 
-// bgtu kita masuk ke index , tanpa melalui isi form login dengan baik maka lansung di tendang lagi ke halaman login
-// krn $_SESSION["login"] ga ada , jadi bisa masuk index hanya si user mengisi login dengan baik dan benar 
 if( !isset($_SESSION["login"]) ){
     echo"
         <script>
@@ -16,15 +14,8 @@ if( !isset($_SESSION["login"]) ){
 
 
 if ( isset($_POST["simpan"]) ){
-
-    // jadi gw manggil fungsi tambah dari halaman funtions.php yg fungsinya gw simpan di variabel $hasil
     $hasil = tambah($_POST);
     if ( $hasil > 0 ){
-        /*
-        kalo mysqli_affected_rows itu dia menerima 2 kondisi , kondisi pertama jika hasil nya sama dengan integer 1 maka
-        dia true , artinya berhasil di tambahkan , maka akan mengeksekusi kode di dalam if ini ,
-        Dan jika hasilnya 0 / false , maka dia akan mengeksekusi kondisi di dalam else yg di mana datanya gagal di ubah
-        */
         echo "
             <script>
                 alert('Data Berhasil Ditambahkan!');
@@ -38,37 +29,28 @@ if ( isset($_POST["simpan"]) ){
                 document.location.href = 'index.php'; 
             </script>
         ";
-        // sbnrnya si ya menurut gw , pesan error ini tidak di perlukan , knp ? ya krn kan sintaks/query sql nya sudah 
-        // dituliskan di dalam code , dan kita user/gw input data nya udh bentuk interface yg dimana tinggal kita 
-        // isi isikan kolom nya tidak perlu lagi menuliskan query , mknya si mnurut gw ga diperlukan lagi , itu opini gw
-        echo mysqli_error($conn); //nah knp gw bisa gunain $conn dan juga di atas tidak ada koneksi database dan tidak
-                                  // $conn ?, nah krn tdi gw udh menghubungkan halaman ini dgn hal functions.php , jadi nya 
-                                  // funsi2 atau variable yg di halaman funtions bisa gw panggil disni
+        echo mysqli_error($conn);
     }
 }
 ?>
 
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
     <title>Tambah Data Baju Display</title>
-    <link rel="stylesheet" href="bootstrap.min.css">    
-    <script src="jquery.min.js"></script>
-    <script src="bootstrap.min.js"></script>
-    <script src="popper.min.js"></script>
-</head>
+  </head>
 <body>
     
 
-<!-- 
-gw tambahin sbuah atribut , yg diunakan untuk mengelola file gambar , jdi nnti seolah olah form nya mempunyai 2 
-buah jalur gtu , untuk string akan di kelola oleh $_POST dan untuk file akan di kelola oleh $_FILES
-Jadi ini enctype="multipart/form-data" harus dibuat dulu supaya file nya bisa di ambil
--->
-<div class="container">
+<div class="container mt-3">
   <h2>Tambah Data Baju Display</h2><br>
   <form action="" method="post" enctype="multipart/form-data">
     <div class="form-group">
@@ -93,21 +75,38 @@ Jadi ini enctype="multipart/form-data" harus dibuat dulu supaya file nya bisa di
     </div>
     Gambar :
     <div style="margin:7px 0px 0px 0px" class="custom-file">
-        <input type="file" class="custom-file-input" id="customFile" name="gambar">
+        <input type="file" accept="image/*" class="custom-file-input" id="customFile" name="gambar" onchange="preview_image(event)" required>
         <label class="custom-file-label" for="customFile">Masukan gambar</label>
     </div>
-    <button style="margin:10px 0px 40px 0px" type="submit" class="btn btn-primary" name="simpan">Simpan</button>
+    <div class="mt-2">
+      <img id="output_image" class="img-fluid" style="width:310px;height:320px;">
+    </div>
+    <button type="submit" class="btn btn-primary mt-3 mb-5 mr-2" name="simpan">Simpan</button>
+    <a href="index.php" class="btn btn-info mt-3 mb-5">Batal</a>
   </form>
 </div>
 
-<!-- Script di bawah ini adalh , jika user menginputkan gambar , maka nama gambar nya akan berubah , yg tadi nya default
-Masukkan gambar , akan berubah menjadi nama file gambar yg di inputkan user  -->
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <script>
-// Add the following code if you want the name of the file appear on select
-$(".custom-file-input").on("change", function() {
-  var fileName = $(this).val().split("\\").pop();
-  $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
-});
+  function preview_image(event) 
+  {
+   var reader = new FileReader();
+   reader.onload = function()
+   {
+    var output = document.getElementById('output_image');
+    output.src = reader.result;
+   }
+   reader.readAsDataURL(event.target.files[0]);
+  }
+
+  $(".custom-file-input").on("change", function() {
+    var fileName = $(this).val().split("\\").pop();
+    $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+  });
 </script>
 
 
